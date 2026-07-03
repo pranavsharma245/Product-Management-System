@@ -6,6 +6,7 @@ let productquantity=document.getElementById("product-quantity");
 let btn=document.getElementById("btn");
 let table=document.getElementById("table");
 
+
 btn.addEventListener("click",()=>{
    product={
     Code:productcode.value,
@@ -29,6 +30,14 @@ if(product.Price<=0 || product.Quantity<=0){
     return;
    }
    products.push(product);
+   displayProduct();
+    productcode.value=""
+    productname.value=""
+    productprice.value=""
+    productquantity.value=""
+    
+})
+function displayProduct(){
    table.innerHTML=`
              <tr>
                 <th>Code</th>
@@ -36,8 +45,9 @@ if(product.Price<=0 || product.Quantity<=0){
                 <th>Price</th>
                 <th>Quantity</th>
                 <th>Total Amount</th>
+                <th>Delete</th>
              </tr>`
-    products.forEach(val => {
+    products.forEach((val,idx)=> {
     
     table.innerHTML+=`    
         <tr>
@@ -46,12 +56,12 @@ if(product.Price<=0 || product.Quantity<=0){
             <td>${val.Price}</td>
             <td>${val.Quantity}</td>
             <td>${val.Quantity*val.Price}</td>
-            <td></td>
+            <td><button onclick="deleteproduct(${idx})">Delete</button></td>
         </tr>`
     })
-    productcode.value=""
-    productname.value=""
-    productprice.value=""
-    productquantity.value=""
+}
+function deleteproduct(idx){
+        products.splice(idx,1);
+        displayProduct();
     
-})
+}
