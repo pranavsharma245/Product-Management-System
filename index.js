@@ -1,12 +1,12 @@
-let products=[];
+let products = JSON.parse(localStorage.getItem("products")) || [];
 let productcode=document.getElementById("product-code");
 let productname=document.getElementById("product-name");
 let productprice=document.getElementById("product-price");
 let productquantity=document.getElementById("product-quantity");
 let btn=document.getElementById("btn");
 let table=document.getElementById("table");
-
-
+let editidx=-1;
+displayProduct();
 btn.addEventListener("click",()=>{
    product={
     Code:productcode.value,
@@ -29,8 +29,19 @@ if(product.Price<=0 || product.Quantity<=0){
     alert("please enter valid details")
     return;
    }
-   products.push(product);
-   displayProduct();
+   if(editidx==-1){
+     products.push(product);
+     localStorage.setItem("products", JSON.stringify(products));
+     displayProduct();
+   }
+   else{
+    products[editidx]=product
+    localStorage.setItem("products", JSON.stringify(products));
+    displayProduct();
+    editidx=-1;
+    btn.innerText="Add to cart"
+    
+   }
     productcode.value=""
     productname.value=""
     productprice.value=""
@@ -45,7 +56,7 @@ function displayProduct(){
                 <th>Price</th>
                 <th>Quantity</th>
                 <th>Total Amount</th>
-                <th>Delete</th>
+                <th>Action</th>
              </tr>`
     products.forEach((val,idx)=> {
     
@@ -56,12 +67,23 @@ function displayProduct(){
             <td>${val.Price}</td>
             <td>${val.Quantity}</td>
             <td>${val.Quantity*val.Price}</td>
-            <td><button onclick="deleteproduct(${idx})">Delete</button></td>
+            <td><button onclick="deleteproduct(${idx})">Delete</button>
+            <button onclick="editproduct(${idx})">Edit</button></td>
         </tr>`
     })
 }
 function deleteproduct(idx){
         products.splice(idx,1);
+        localStorage.setItem("products", JSON.stringify(products));
         displayProduct();
     
+}
+function editproduct(idx){
+    editidx=idx;
+    let product=products[idx];
+    productcode.value=product.Code;
+    productname.value=product.Name;
+    productprice.value=product.Price;
+    productquantity.value=product.Quantity;
+   btn.innerText="Update"
 }
